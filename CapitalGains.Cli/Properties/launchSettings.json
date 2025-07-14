@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CapitalGains.Cli": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
