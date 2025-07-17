@@ -14,8 +14,4 @@
     <ProjectReference Include="..\CapitalGains.Domain\CapitalGains.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Operations\" />
-  </ItemGroup>
-
 </Project>

@@ -1,7 +1,9 @@
 using CapitalGains.App.Interfaces;
+using CapitalGains.App.Operations;
 using CapitalGains.App.Services;
 using CapitalGains.Cli.Infrastructure;
 using CapitalGains.Domain.Entities;
+using CapitalGains.Domain.Interface;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -29,12 +31,9 @@ class Program
     {
         services.AddScoped<Portfolio>();
 
-        // Handlers
-        //services.AddScoped<ITradeOperationHandler, BuyOperationHandler>();
-        //services.AddScoped<ITradeOperationHandler, SellOperationHandler>();
-        //services.AddScoped<ITradeOperationHandler, DividendOperationHandler>();
-
-        // Calculator depende dos handlers
+        services.AddScoped<ITradeOperationHandler, BuyOperationHandler>();
+        services.AddScoped<ITradeOperationHandler, SellOperationHandler>();
+        
         services.AddScoped<ICapitalGainsCalculator, CapitalGainsCalculator>();
     }
 }

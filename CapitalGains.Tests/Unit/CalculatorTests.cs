@@ -1,4 +1,6 @@
+using CapitalGains.App.Operations;
 using CapitalGains.App.Services;
+using CapitalGains.Domain.Interface;
 using CapitalGains.Domain.Models;
 using FluentAssertions;
 
@@ -286,39 +288,56 @@ public class CalculatorTests
         result[7].Tax.Should().Be(2400.0m);
     }
 
-    //[Theory]
-    //[MemberData(nameof(GetData))]
-    //public void Calculate_SaleHasProfitAboveThreshold_ApplyTax(Trade[] trades, TaxResult[] expected)
-    //{
-    //    // Arrange
-    //    var calculator = CreateDefaultCalculator();
+    [Fact]
+    public void Should_SellOperation_Error()
+    {
+        // Arrange
+        var calculator = CreateDefaultCalculator();
+        var trades = new List<Trade>
+            {
+                new(OperationType.Buy, 10000.00m, 10),
+                new(OperationType.Sell, 11000.00m, 20),
+            };
 
-    //    // Act
-    //    var result = calculator.Calculate(trades);
+        // Act
+        var result = calculator.Calculate(trades);
 
-    //    // Assert
-    //    result.Should().HaveCount(expected.Length);
-    //    result[0].Value.Should().Be(expected[0].Value);
-    //    result[1].Value.Should().Be(expected[1].Value);
-    //}
+        // Assert
+        result[0].Tax.Should().Be(0.0m);
+        result[1].Tax.Should().Be(0.0m);
+        result[1].Error.Should().Be("Can't sell more stocks than you have");
+    }
 
-    //public static IEnumerable<object[]> GetData()
-    //{
-    //    yield return new object[]
-    //    {
-    //        new List<Trade>
-    //        {
-    //            new(OperationType.Buy, 10.0m, 10000),
-    //            new(OperationType.Sell, 20.0m, 5000)
-    //        },
-    //        new List<TaxResult>
-    //        { 
-    //            new(0.0m),
-    //            new(10000.0m),
-    //        }
-    //    };
-    //}
+    [Fact]
+    public void Should_SellOperationError_ShellOperationTax()
+    {
+        // Arrange
+        var calculator = CreateDefaultCalculator();
+        var trades = new List<Trade>
+            {
+                new(OperationType.Buy, 10000.00m, 10),
+                new(OperationType.Sell, 11000.00m, 20),
+                new(OperationType.Sell, 50000.00m, 10),
+            };
 
-    private static CapitalGainsCalculator CreateDefaultCalculator() => new();
+        // Act
+        var result = calculator.Calculate(trades);
+
+        // Assert
+        result[0].Tax.Should().Be(0.0m);
+        result[1].Tax.Should().Be(0.0m);
+        result[1].Error.Should().Be("Can't sell more stocks than you have");
+        result[2].Tax.Should().Be(80000.0m);
+    }
+
+    private static CapitalGainsCalculator CreateDefaultCalculator()
+    {
+        var handlers = new ITradeOperationHandler[]
+        {
+            new BuyOperationHandler(),
+            new SellOperationHandler(),
+        };
+        return new CapitalGainsCalculator(handlers);
+    }
 
 }
