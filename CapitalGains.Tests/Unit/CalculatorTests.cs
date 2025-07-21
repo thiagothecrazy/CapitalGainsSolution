@@ -90,7 +90,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #2 - Venda com lucro e prejuízo deduzido")]
+    [Fact(DisplayName = "Caso #2 - Venda com lucro e prejuÃ­zo deduzido")]
     public void Should_Apply_Tax_Only_When_Lucrative_Sale_Exceeds_Threshold()
     {
         // Arrange
@@ -111,7 +111,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #3 - Dedução de prejuízo anterior")]
+    [Fact(DisplayName = "Caso #3 - DeduÃ§Ã£o de prejuÃ­zo anterior")]
     public void Should_Apply_Tax_After_Deducting_Previous_Losses()
     {
         // Arrange
@@ -132,7 +132,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(1000.0m);
     }
 
-    [Fact(DisplayName = "Caso #4 - Preço médio igual ao valor de venda")]
+    [Fact(DisplayName = "Caso #4 - PreÃ§o mÃ©dio igual ao valor de venda")]
     public void Should_Not_Apply_Tax_When_Sale_Equals_WeightedAverage()
     {
         // Arrange
@@ -153,7 +153,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #5 - Venda lucrativa após venda neutra")]
+    [Fact(DisplayName = "Caso #5 - Venda lucrativa apÃ³s venda neutra")]
     public void Should_Apply_Tax_Only_On_Lucrative_Sale_After_Neutral()
     {
         // Arrange
@@ -176,7 +176,7 @@ public class CalculatorTests
         result[3].Tax.Should().Be(10000.0m);
     }
 
-    [Fact(DisplayName = "Caso #6 - Dedução sequencial de prejuízos")]
+    [Fact(DisplayName = "Caso #6 - DeduÃ§Ã£o sequencial de prejuÃ­zos")]
     public void Should_Deduct_Sequential_Losses_Before_Taxing()
     {
         // Arrange
@@ -201,7 +201,7 @@ public class CalculatorTests
         result[4].Tax.Should().Be(3000.0m);
     }
 
-    [Fact(DisplayName = "Caso #7 - Reinício de estado entre simulações")]
+    [Fact(DisplayName = "Caso #7 - ReinÃ­cio de estado entre simulaÃ§Ãµes")]
     public void Should_Reset_Portfolio_State_Between_Simulations()
     {
         // Arrange
@@ -257,7 +257,7 @@ public class CalculatorTests
         result[3].Tax.Should().Be(60000.0m);
     }
 
-    [Fact(DisplayName = "Caso #9 - Múltiplas compras e vendas com prejuízo acumulado")]
+    [Fact(DisplayName = "Caso #9 - MÃºltiplas compras e vendas com prejuÃ­zo acumulado")]
     public void Should_Accumulate_Loss_And_Apply_It_Before_Tax()
     {
         // Arrange
@@ -328,6 +328,23 @@ public class CalculatorTests
         result[1].Tax.Should().Be(0.0m);
         result[1].Error.Should().Be("Can't sell more stocks than you have");
         result[2].Tax.Should().Be(80000.0m);
+    }
+
+    [Fact]
+    public void Should_Operetion_TaxReturn()
+    {
+        // Arrange
+        var calculator = CreateDefaultCalculator();
+        var trades = new List<Trade>
+            {
+                new(OperationType.Buy, 10000.00m, 10),
+            };
+
+        // Act
+        var result = calculator.Calculate(trades);
+
+        // Assert
+        result[0].Tax.Should().Be(0.0m);
     }
 
     private static CapitalGainsCalculator CreateDefaultCalculator()
