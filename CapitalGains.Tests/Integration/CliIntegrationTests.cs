@@ -13,32 +13,9 @@ namespace CapitalGains.Tests.Integration;
 
 public class CliIntegrationTests
 {
-    [Fact]
-    public void Should_Process_SellOperationError_CorrectJson_Output()
-    {
-        // Arrange
-        var inputJson = ToJson(
-            [
-                new OperationDto { Operation = OperationType.Buy, UnitCost = 10000.00m, Quantity = 10 },
-                new OperationDto { Operation = OperationType.Sell, UnitCost = 11000.00m, Quantity = 20 }
-            ]
-        );
+    
 
-        var expected = "[{\"tax\":0.00},{\"tax\":0.00,\"error\":\"Can't sell more stocks than you have\"}]" + "\r\n";
-
-        var input = new StringReader(inputJson + "\n");
-        var output = new StringWriter();
-        var runner = CreateRunner(input, output);
-
-        // Act
-        runner.Run();
-
-        // Assert
-        var actual = output.ToString();
-        actual.Should().Be(expected);
-    }
-
-    [Fact]
+    [Fact(DisplayName = "Formato JSON retornado com sucesso")]
     public void Should_Process_Valid_CorrectJson_Output()
     {
         // Arrange
@@ -63,7 +40,7 @@ public class CliIntegrationTests
         actual.Should().Be(expected);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Processar entrada válida com resultado correto")]
     public void Should_Process_Valid_Input_And_Produce_Correct_Output()
     {
         // Arrange
@@ -93,7 +70,7 @@ public class CliIntegrationTests
         actual[0].Should().BeEquivalentTo(expected[0]);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Processar varías linhas independente")]
     public void Should_Process_Multiple_Independent_Lines()
     {
         // Arrange
@@ -130,6 +107,31 @@ public class CliIntegrationTests
         actual.Should().HaveCount(expected.Count);
         actual[0].Should().BeEquivalentTo(expected[0]);
         actual[1].Should().BeEquivalentTo(expected[1]);
+    }
+
+    [Fact(DisplayName = "Formato JSON retornado com venda inválida")]
+    public void Should_Process_SellOperationError_CorrectJson_Output()
+    {
+        // Arrange
+        var inputJson = ToJson(
+            [
+                new OperationDto { Operation = OperationType.Buy, UnitCost = 10000.00m, Quantity = 10 },
+                new OperationDto { Operation = OperationType.Sell, UnitCost = 11000.00m, Quantity = 20 }
+            ]
+        );
+
+        var expected = "[{\"tax\":0.00},{\"tax\":0.00,\"error\":\"Can't sell more stocks than you have\"}]" + "\r\n";
+
+        var input = new StringReader(inputJson + "\n");
+        var output = new StringWriter();
+        var runner = CreateRunner(input, output);
+
+        // Act
+        runner.Run();
+
+        // Assert
+        var actual = output.ToString();
+        actual.Should().Be(expected);
     }
 
     private static StdInRunner CreateRunner(StringReader input, StringWriter output)

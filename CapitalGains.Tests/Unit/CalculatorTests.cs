@@ -3,12 +3,13 @@ using CapitalGains.App.Services;
 using CapitalGains.Domain.Interface;
 using CapitalGains.Domain.Models;
 using FluentAssertions;
+using System.Net;
 
 namespace CapitalGains.Tests.Unit;
 
 public class CalculatorTests
 {
-    [Fact]
+    [Fact(DisplayName = "Aplicar imposto quando a venda tiver lucro acima do limite")]
     public void Should_Apply_Tax_When_Sale_Has_Profit_Above_Threshold()
     {
         // Arrange
@@ -28,7 +29,7 @@ public class CalculatorTests
         result[1].Tax.Should().Be(10000.0m);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Não aplicar imposto quando venda abaixo do limite")]
     public void Should_Apply_No_Tax_When_Sale_Under_Threshold()
     {
         // Arrange
@@ -47,7 +48,7 @@ public class CalculatorTests
         result[1].Tax.Should().Be(0.0m);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Deve acumular perdas e deduzir dos lucros futuros")]
     public void Should_Accumulate_Loss_And_Deduct_From_Future_Profit()
     {
         // Arrange
@@ -68,7 +69,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(1000.0m);
     }
 
-    [Fact(DisplayName = "Caso #1 - Vendas com valor total abaixo de 20 mil")]
+    [Fact(DisplayName = "Caso #01 - Vendas com valor total abaixo de 20 mil")]
     public void Should_Not_Apply_Tax_When_Sale_Is_Under_Threshold()
     {
         // Arrange
@@ -90,7 +91,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #2 - Venda com lucro e prejuízo deduzido")]
+    [Fact(DisplayName = "Caso #02 - Venda com lucro e prejuízo deduzido")]
     public void Should_Apply_Tax_Only_When_Lucrative_Sale_Exceeds_Threshold()
     {
         // Arrange
@@ -111,7 +112,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #3 - Dedução de prejuízo anterior")]
+    [Fact(DisplayName = "Caso #03 - Dedução de prejuízo anterior")]
     public void Should_Apply_Tax_After_Deducting_Previous_Losses()
     {
         // Arrange
@@ -132,7 +133,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(1000.0m);
     }
 
-    [Fact(DisplayName = "Caso #4 - Preço médio igual ao valor de venda")]
+    [Fact(DisplayName = "Caso #04 - Preço médio igual ao valor de venda")]
     public void Should_Not_Apply_Tax_When_Sale_Equals_WeightedAverage()
     {
         // Arrange
@@ -153,7 +154,7 @@ public class CalculatorTests
         result[2].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #5 - Venda lucrativa após venda neutra")]
+    [Fact(DisplayName = "Caso #05 - Venda lucrativa após venda neutra")]
     public void Should_Apply_Tax_Only_On_Lucrative_Sale_After_Neutral()
     {
         // Arrange
@@ -176,7 +177,7 @@ public class CalculatorTests
         result[3].Tax.Should().Be(10000.0m);
     }
 
-    [Fact(DisplayName = "Caso #6 - Dedução sequencial de prejuízos")]
+    [Fact(DisplayName = "Caso #06 - Dedução sequencial de prejuízos")]
     public void Should_Deduct_Sequential_Losses_Before_Taxing()
     {
         // Arrange
@@ -201,7 +202,7 @@ public class CalculatorTests
         result[4].Tax.Should().Be(3000.0m);
     }
 
-    [Fact(DisplayName = "Caso #7 - Reinício de estado entre simulações")]
+    [Fact(DisplayName = "Caso #07 - Reinício de estado entre simulações")]
     public void Should_Reset_Portfolio_State_Between_Simulations()
     {
         // Arrange
@@ -234,7 +235,7 @@ public class CalculatorTests
         result2[3].Tax.Should().Be(0.0m);
     }
 
-    [Fact(DisplayName = "Caso #8 - Grandes lucros sucessivos")]
+    [Fact(DisplayName = "Caso #08 - Grandes lucros sucessivos")]
     public void Should_Apply_Tax_On_Successive_Large_Lucrative_Sales()
     {
         // Arrange
@@ -257,7 +258,7 @@ public class CalculatorTests
         result[3].Tax.Should().Be(60000.0m);
     }
 
-    [Fact(DisplayName = "Caso #9 - Múltiplas compras e vendas com prejuízo acumulado")]
+    [Fact(DisplayName = "Caso #09 - Múltiplas compras e vendas com prejuízo acumulado")]
     public void Should_Accumulate_Loss_And_Apply_It_Before_Tax()
     {
         // Arrange
@@ -288,7 +289,8 @@ public class CalculatorTests
         result[7].Tax.Should().Be(2400.0m);
     }
 
-    [Fact]
+    [Fact(DisplayName = "#Pair Programming 1 - Não permite vender acima que a posição")]
+
     public void Should_SellOperation_Error()
     {
         // Arrange
@@ -308,7 +310,7 @@ public class CalculatorTests
         result[1].Error.Should().Be("Can't sell more stocks than you have");
     }
 
-    [Fact]
+    [Fact(DisplayName = "#Pair Programming 2 - Permite vender apenas abaixo que a posição")]
     public void Should_SellOperationError_ShellOperationTax()
     {
         // Arrange
